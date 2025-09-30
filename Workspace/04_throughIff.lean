@@ -11,6 +11,20 @@ Call your theorem andImpEquiv.
 
 -- ANSWER
 
+--Formal Proof
+theorem andImpEquiv (P Q : Prop) : (P ∧ Q) → (P ↔ Q) := by
+  intro hPQ
+    -- hPQ : P ∧ Q
+  -- Build an equivalence by giving both directions.
+  refine Iff.intro ?pq ?qp
+  · -- P → Q
+    intro _p
+    exact hPQ.right
+  · -- Q → P
+    intro _q
+    exact hPQ.left
+
+
 
 /- @@@
 #2: Give the proof in #1 in English. To do this,
@@ -26,7 +40,14 @@ context,  and we will then show that, in that
 context, the conclusion must be true as well. So
 assume P ∧ Q is true. The conclusion to be proved
 is an equivalence. To prove an equivalence we need
-to prove both ...
+to prove both directions:
+(i) P → Q and (ii) Q → P.
+For (i) assume P From out original assumption P ∧ Q,
+by ∧-elimination, we obtain Q Thus P → Q
+For (ii) assume Q From P ∧ Q we also obtain P by
+∧-elimination. Thus Q → P. Having proved both directions,
+we conclude P ↔ Q. Since this was under the assumption
+P ∧ Q, we have (P ∧ Q) → (P ↔ Q).
 @@@ -/
 
 
@@ -48,7 +69,13 @@ case (here involving X and Y) of the general claim.
 @@@ -/
 
 -- Answer
+axiom X : Prop
+axiom Y : Prop
+axiom hXY : X ∧ Y
 
+--Apply the general theorem from #1 to this specific world:
+#check (andImpEquiv X Y hXY)
+-- : X ↔ Y
 
 
 /- @@@
@@ -93,14 +120,27 @@ definition.
 @@@ -/
 
 -- ANSWER
+--Formal proof using 'False.elim'
+theorem exFalsoK (K : Prop) : False → K := by
+  intro f
+  exact False.elim f
 
+--Equivalent proof using 'nomatch'
+theorem exFalsoK_nomatch (K : Prop) : False → K := by
+  intro f
+  nomatch f
 
 /- @@@
 Why is it safe to accept tihs definition? What do we
 know that's special about *exFalsoK* that makes it ok?
 
 ANSWER:
-
+It's safe because 'False' had no proofs/constructors.
+Any context that provides 'f : False' is an impossible case.
+From an impossible hypothesis, anything follows (principle:
+ex falso quodlibet) Lean accepts "bailing out" of an impossible
+branch with 'False.elim f' or 'nomatch f' for any target K
+precisely because such a branch can never actually occur
 
 @@@ -/
 
@@ -112,7 +152,11 @@ P implies Q.
 @@@-/
 
 -- ANSWER
-
+theorem falseAndP_implies_Q ( Q : Prop) : (False ∧ P) → Q := by
+  intro h
+--From h : False ∧ P we get a proof of False
+  have f : False := h.left
+  exact False.elim f
 
 /- @@@
 Write a short paragraph stating the proposition to be
@@ -120,7 +164,12 @@ proved and the proof of it -- in English.
 @@@ -/
 
 -- ANSWER
-
+/-
+Let P and Q be propositions. Assume False ∧ P.
+By ∧-elimination we obtain a proof False. From a
+contradiction, anything follows (ex falso), so Q holds
+Therefore, (False ∧ P) → Q. ∎
+-/
 
 /- @@@
 #6 State and prove the proposition that False → False.
@@ -129,3 +178,12 @@ Give both formal and English (natural language) proofs.
 
 
 -- ANSWER
+
+--Formal Proof
+theorem falseImpFalse : False → False := by
+  intro f
+  exact f
+
+--English Proof
+-- Proof. Assume False. Then, False holds; return the same proof.
+--Therefor False → False.
