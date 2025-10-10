@@ -1,5 +1,5 @@
 /- @@@
-# Predicate Logic Inherence Rules in Lean
+# Predicate Logic Inference Rules
 
 Below are the *canonical introductions/eliminations*
 (constructors and extractors) Lean provides for each
@@ -10,7 +10,6 @@ known as the Curry Howard Correspondence, as you know).
 @@@ -/
 
 /- @@@
-
 <!-- toc -->
 ## ⊤ (True)
 
