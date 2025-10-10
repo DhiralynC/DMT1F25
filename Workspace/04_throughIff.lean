@@ -24,8 +24,6 @@ theorem andImpEquiv (P Q : Prop) : (P ∧ Q) → (P ↔ Q) := by
     intro _q
     exact hPQ.left
 
-
-
 /- @@@
 #2: Give the proof in #1 in English. To do this,
 just explain clearly what assumptions you make or
