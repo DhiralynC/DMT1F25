@@ -204,7 +204,26 @@ able to. Understand where you got stuck. Leave
 you incomplete proof commented out with a quick
 comment explaining exactly why you get stuck.
 
+Cannot prove. 
+We have hnn : (¬P) -> False and must build p : P.
+Theres no constructive way to *produce* a witness of P from ¬¬P
+without a classical axiom, so this gets stuck.
+
+example (P : Prop) : ¬¬P → P :=
+fun hnn =>
+  -- Stuck: need a way to decide P v ¬P to proceed
+
+
 #2. Provide that if you accept (assume) the axiom
 of the excluded middle, then negation elimination
 is valid.
 @@@ -/
+
+theorem dne_from_em
+  (em : ∀ P : Prop, P ∨ ¬P) :
+  ∀ P : Prop, ¬¬P → P :=
+by
+  intro P hnn
+  cases em P with
+  | inl p => exact p
+  | inr np => exact False.elim (hnn np)
