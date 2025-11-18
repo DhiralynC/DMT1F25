@@ -58,15 +58,19 @@ propositional logic, by writing out a truth table. In most cases
 here you can probably figure out the right answer without one, so
 truth tables are NOT required here.
 
-- A. (P → Q) → (Q → P)
+- A. (P → Q) → (Q → P)  
+NOT VALID 
+Counterexample: [[P]] = true ∧ [[Q]] = false
 
-- B. (¬Q → ¬P) → (P → Q)
+- B. (¬Q → ¬P) → (P → Q) VALID
 
-- C. ¬(P ∧ Q) → ¬Q ∨ ¬P
+- C. ¬(P ∧ Q) → ¬Q ∨ ¬P VALID
 
-- D. (P ∧ Q) → (P ∨ Q)
+- D. (P ∧ Q) → (P ∨ Q) VALID
 
-- E. (P ∨ Q) → (P ∧ Q)
+- E. (P ∨ Q) → (P ∧ Q) 
+NOT VALID
+Counterexample: [[P]] = true ∧ [[Q]] = false
 
 
 ## 2. Proof-Based Reasoning [20 points each = 60 points]
@@ -80,19 +84,22 @@ example (P Q : Prop) : (P ∨ Q) → (¬P → ¬Q) → False :=
 (
   fun porq np2nq =>
   (
-    sorry
+    --sorry this can not be proved
   )
 )
 
 example (P Q : Prop) : P → ¬P → Q :=
 (
-  sorry
+  by
+    intro p np
+    have f : False := np p
+    exact False.elim f
 )
 
 
 example (P Q R : Prop) : (P ∨ Q) ∧ (¬P → Q) :=
 (
-  sorry
+  --sorry this can not be proved
 )
 
 
@@ -125,11 +132,11 @@ Iff.intro
     match pornp with
     | Or.inl p =>
       match qornq with
-      | Or.inl q => sorry
+      | Or.inl q => Or.inr q
       | Or.inr nq =>
-        let q : Q := sorry
-        False.elim sorry
-    | Or.inr np => sorry
+        let q : Q := h p
+        False.elim (nq q)
+    | Or.inr np => Or.inl np
 )
 
 -- Backward: (¬P ∨ Q) → (P → Q)   [10 points]
@@ -137,8 +144,8 @@ Iff.intro
   fun nporq =>
   (
     match nporq with
-    | Or.inl np => fun p => sorry
-    | Or.inr q => sorry
+    | Or.inl np => fun p => False.elim (np p)
+    | Or.inr q => fun p => q
   )
 )
 
@@ -154,6 +161,14 @@ P must be false.
 @@@ -/
 
 -- Answer here:
+example (P Q : Prop) : (P -> Q) -> (P -> ¬Q) -> ¬P :=
+(
+  fun hPQ hPnQ =>
+    fun p =>
+      let q : Q := hPQ p
+      let nq : ¬Q := hPnQ p
+      nq q
+)
 
 /- @@@
 Now try a constructive proof of this proposition.
@@ -166,9 +181,17 @@ though it is valid classically.
 @@@ -/
 
 -- Lean answer here:
+example (P Q : Prop) : (P -> Q) -> (P -> ¬Q) -> ¬P :=
+(
+  fun hPQ hPnQ =>
+    (hPnQ p) (hPQ p)
+    --not valid
+)
+
 
 /- @@@
 Short English explanation here:
-
+This formula is not valild constructively because from P -> Q and P-> ¬Q, assume P is true, 
+But then you get both Q and ¬Q, which are in fact not true so it results into ¬P.
 
 @@@ -/
